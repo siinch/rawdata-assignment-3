@@ -1,0 +1,11 @@
+/home/simon/gitrepos/rawdata-assignment-3/Server/bin/Debug/netcoreapp3.0/Server
+/home/simon/gitrepos/rawdata-assignment-3/Server/bin/Debug/netcoreapp3.0/Server.deps.json
+/home/simon/gitrepos/rawdata-assignment-3/Server/bin/Debug/netcoreapp3.0/Server.runtimeconfig.json
+/home/simon/gitrepos/rawdata-assignment-3/Server/bin/Debug/netcoreapp3.0/Server.runtimeconfig.dev.json
+/home/simon/gitrepos/rawdata-assignment-3/Server/bin/Debug/netcoreapp3.0/Server.dll
+/home/simon/gitrepos/rawdata-assignment-3/Server/bin/Debug/netcoreapp3.0/Server.pdb
+/home/simon/gitrepos/rawdata-assignment-3/Server/obj/Debug/netcoreapp3.0/Server.csprojAssemblyReference.cache
+/home/simon/gitrepos/rawdata-assignment-3/Server/obj/Debug/netcoreapp3.0/Server.AssemblyInfoInputs.cache
+/home/simon/gitrepos/rawdata-assignment-3/Server/obj/Debug/netcoreapp3.0/Server.AssemblyInfo.cs
+/home/simon/gitrepos/rawdata-assignment-3/Server/obj/Debug/netcoreapp3.0/Server.dll
+/home/simon/gitrepos/rawdata-assignment-3/Server/obj/Debug/netcoreapp3.0/Server.pdb

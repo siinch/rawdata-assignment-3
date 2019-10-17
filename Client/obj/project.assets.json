@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/simon/gitrepos/rawdata-assignment-3/Server/Server.csproj",
-      "projectName": "Server",
-      "projectPath": "/home/simon/gitrepos/rawdata-assignment-3/Server/Server.csproj",
+      "projectUniqueName": "/home/simon/gitrepos/rawdata-assignment-3/Client/Client.csproj",
+      "projectName": "Client",
+      "projectPath": "/home/simon/gitrepos/rawdata-assignment-3/Client/Client.csproj",
       "packagesPath": "/home/simon/.nuget/packages/",
-      "outputPath": "/home/simon/gitrepos/rawdata-assignment-3/Server/obj/",
+      "outputPath": "/home/simon/gitrepos/rawdata-assignment-3/Client/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/share/dotnet/sdk/NuGetFallbackFolder"
