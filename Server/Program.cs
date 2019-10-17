@@ -23,7 +23,7 @@ namespace Server
         [JsonPropertyName("name")]
         public string Name { get; set; }
     }
-    
+
     class Program
     {
         static void Main(string[] args)
@@ -34,33 +34,25 @@ namespace Server
             var server = new TcpListener(ip, port);
             server.Start();
             
+            //serving clients
             while (true)
             {
-                //receive message from client
                 Console.WriteLine("Waiting for client...");
                 var client = server.AcceptTcpClient(); ;
-                var stream = client.GetStream();
-                var buffer = new byte[client.ReceiveBufferSize];
-                var rcnt = stream.Read(buffer, 0, buffer.Length);
-                var message = Encoding.UTF8.GetString(buffer, 0, rcnt);
+                var request = client.ReadRequest();
+                var response = new {Status = "", Body = ""};
 
-                var response = new {Response = ""};
-                if (message == "exit") break;
-                if (message == "{}") response = new {Response = "Missing method"};
+                if (request.Method == null) response = new {Status = "Missing Method", Body=""};
+                    
+                if (request.Method == "Exit") break;
                 
-                Console.WriteLine();
-                
-                //sending response to client
-                //Console.WriteLine($"Message: {message}");
-                //message = message.ToUpper();
-                buffer = Encoding.UTF8.GetBytes(response.ToJson());
-                stream.Write(buffer, 0, buffer.Length);
-                stream.Close();
+                client.SendResponse(response.ToJson());
             }
 
             server.Stop();
         }
     }
+    
     
     public static class Util
     {
