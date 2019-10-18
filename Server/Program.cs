@@ -34,6 +34,8 @@ namespace Server
             var server = new TcpListener(ip, port);
             var legalmethods = "create read update delete echo";
             var requirespath = "create read update delete";
+            var requiresbody = "create update echo";
+            //var jsonformat = "} { \"method\": ,\"path\": ,\"date\": ,\"body\":";
             server.Start();
             
             //serving clients
@@ -44,15 +46,23 @@ namespace Server
                 var request = client.ReadRequest();
                 var response = new {Status = "Default", Body = ""};
 
-                if (request.Method == null) 
-                    response = new {Status = "Missing Method", Body=""};
+                if (request.Method == null && request.Date == null) 
+                    response = new {Status = "Missing Method and Missing Date", Body=""};
                 else if (!legalmethods.Contains(request.Method.ToLower())) 
                     response = new {Status = "Illegal Method", Body = ""};  
-                if (requirespath.Contains(request.Method.ToLower()) && request.Path == null) 
+                else if (requirespath.Contains(request.Method.ToLower()) && request.Path == null) 
                     response = new {Status = "Missing Resource", Body = ""};
-                if (request.Date == null)
-                    response = new {Status = "Missing Date", Body = ""};
-                
+                // how to check if unix format???
+                else if (request.Date.Contains("/"))
+                    response = new {Status = "Illegal Date", Body = ""};
+                else if (requiresbody.Contains(request.Method.ToLower()) && request.Body == null)
+                    response = new {Status = "Missing Body", Body = ""};
+                //how to check if json format???
+                else if (request.Method == "update" && request.Body == "Hello World")
+                    response = new {Status = "Illegal Body", Body = ""};
+                else if (request.Method == "echo")
+                    response = new {Status = "Echo", Body = request.Body};
+
                 if (request.Method == "Exit") break;
                 
                 Console.WriteLine($"Request: {request.ToJson()}");
