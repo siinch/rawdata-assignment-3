@@ -32,6 +32,8 @@ namespace Server
             var ip = IPAddress.Parse("127.0.0.1");
             var port = 5000;
             var server = new TcpListener(ip, port);
+            var legalmethods = "create read update delete echo";
+            var requirespath = "create read update delete";
             server.Start();
             
             //serving clients
@@ -40,12 +42,21 @@ namespace Server
                 Console.WriteLine("Waiting for client...");
                 var client = server.AcceptTcpClient(); ;
                 var request = client.ReadRequest();
-                var response = new {Status = "", Body = ""};
+                var response = new {Status = "Default", Body = ""};
 
-                if (request.Method == null) response = new {Status = "Missing Method", Body=""};
-                    
+                if (request.Method == null) 
+                    response = new {Status = "Missing Method", Body=""};
+                else if (!legalmethods.Contains(request.Method.ToLower())) 
+                    response = new {Status = "Illegal Method", Body = ""};  
+                if (requirespath.Contains(request.Method.ToLower()) && request.Path == null) 
+                    response = new {Status = "Missing Resource", Body = ""};
+                if (request.Date == null)
+                    response = new {Status = "Missing Date", Body = ""};
+                
                 if (request.Method == "Exit") break;
                 
+                Console.WriteLine($"Request: {request.ToJson()}");
+                Console.WriteLine($"Response: {response.ToJson()}");
                 client.SendResponse(response.ToJson());
             }
 
