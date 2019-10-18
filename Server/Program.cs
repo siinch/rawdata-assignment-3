@@ -17,6 +17,12 @@ namespace Server
         public string Body { get; set; }
     }
     
+    public class Response
+    {
+        public string Status { get; set; }
+        public string Body { get; set; }
+    }
+    
     public class Category
     {
         [JsonPropertyName("cid")]
@@ -53,47 +59,89 @@ namespace Server
             while (true)
             {
                 Console.WriteLine("Waiting for client...");
-                var client = server.AcceptTcpClient(); ;
+                var client = server.AcceptTcpClient();
+                ;
                 var request = client.ReadRequest();
-                var response = new {Status = "Default", Body = ""};
+                Response response = new Response();
 
-                if (request.Method == null && request.Date == null) 
-                    response = new {Status = "4 missing method, missing date", Body=""};
-                else if (!legalmethods.Contains(request.Method.ToLower())) 
-                    response = new {Status = "4 illegal method", Body = ""};  
-                else if (requirespath.Contains(request.Method.ToLower()) && request.Path == null) 
-                    response = new {Status = "4 missing resource", Body = ""};
+                if (request.Method == null && request.Date == null)
+                    response.Status = "4 missing method, missing date";
+                else if (!legalmethods.Contains(request.Method.ToLower()))
+                    response.Status = "4 illegal method";
+                else if (requirespath.Contains(request.Method.ToLower()) && request.Path == null)
+                    response.Status = "4 missing resource";
                 // how to check if unix format???
                 else if (request.Date.Contains("/"))
-                    response = new {Status = "4 illegal date", Body = ""};
+                    response.Status = "4 illegal date";
                 else if (requiresbody.Contains(request.Method.ToLower()) && request.Body == null)
-                    response = new {Status = "4 missing body", Body = ""};
+                    response.Status = "4 missing body";
                 //how to check if json format???
                 else if (request.Method == "update" && request.Body == "Hello World")
-                    response = new {Status = "4 illegal body", Body = ""};
+                    response.Status = "4 illegal body";
                 else if (request.Method == "echo")
-                    response = new {Status = "1 Ok", Body = request.Body};
+                {
+                    response.Status = "1 Ok";
+                    response.Body = request.Body;
+                }
+                //how to check if the path is correct??
+                else if (!request.Path.Contains("/categories"))
+                    response.Status = "4 Bad Request";
+                else if (request.Path.Contains("/categories/"))
+                {
+                    int id = 0;
+                    Console.WriteLine(request.Path.Remove(0, "/api/category/".Length));
+                    if (Int32.TryParse(request.Path.Remove(0, "/api/categories/".Length), out id))
+                    {
+                        if (request.Method == "create")
+                        {
+                            foreach (var category in categories)
+                            {
+                                if (id == category.Id)
+                                {
+                                    response.Status = "4 Bad Request";
+                                    goto IdAlreadyExists;
+                                }
+                            }
+                            
+                            IdAlreadyExists: ;
+                        }
+                    }
+                    else
+                    {
+                        response.Status = "4 Bad Request";
+                    }
+                }
 
                 if (request.Method == "Exit") break;
                 
-                Console.WriteLine($"Request: {request.ToJson()}");
-                Console.WriteLine($"Response: {response.ToJson()}");
-                client.SendResponse(response.ToJson());
+                Console.WriteLine($"Request: {request.ObjectToJson()}");
+                Console.WriteLine($"Response: {response.ObjectToJson()}");
+                client.SendResponse(response.ObjectToJson());
             }
 
             server.Stop();
         }
     }
-    
-    
+
     public static class Util
     {
-        public static string ToJson(this object data)
+        public static string ReadAllCategories(this List<Category> categories)
+        {
+            var allCategories = "[";
+            foreach (var category in categories)
+            {
+                allCategories = allCategories + categories.ObjectToJson() + ",";
+            }
+            //remove the last comma and add "]"
+            allCategories = allCategories.Remove(allCategories.Length - 1) + "]";
+            return allCategories;
+        }
+        public static string ObjectToJson(this object data)
         {
             return JsonSerializer.Serialize(data, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
 
-        public static T FromJson<T>(this string element)
+        public static T JsonToObject<T>(this string element)
         {
             return JsonSerializer.Deserialize<T>(element, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
