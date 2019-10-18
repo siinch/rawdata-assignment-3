@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -22,6 +23,12 @@ namespace Server
         public int Id { get; set; }
         [JsonPropertyName("name")]
         public string Name { get; set; }
+
+        public Category(int idIn, string nameIn)
+        {
+            Id = idIn;
+            Name = nameIn;
+        }
     }
 
     class Program
@@ -35,6 +42,10 @@ namespace Server
             var legalmethods = "create read update delete echo";
             var requirespath = "create read update delete";
             var requiresbody = "create update echo";
+            var categories = new List<Category>();
+            categories.Add(new Category(1, "Beverages"));
+            categories.Add(new Category(2, "Condiments"));
+            categories.Add(new Category(3, "Confections"));
             //var jsonformat = "} { \"method\": ,\"path\": ,\"date\": ,\"body\":";
             server.Start();
             
@@ -47,21 +58,21 @@ namespace Server
                 var response = new {Status = "Default", Body = ""};
 
                 if (request.Method == null && request.Date == null) 
-                    response = new {Status = "Missing Method and Missing Date", Body=""};
+                    response = new {Status = "4 missing method, missing date", Body=""};
                 else if (!legalmethods.Contains(request.Method.ToLower())) 
-                    response = new {Status = "Illegal Method", Body = ""};  
+                    response = new {Status = "4 illegal method", Body = ""};  
                 else if (requirespath.Contains(request.Method.ToLower()) && request.Path == null) 
-                    response = new {Status = "Missing Resource", Body = ""};
+                    response = new {Status = "4 missing resource", Body = ""};
                 // how to check if unix format???
                 else if (request.Date.Contains("/"))
-                    response = new {Status = "Illegal Date", Body = ""};
+                    response = new {Status = "4 illegal date", Body = ""};
                 else if (requiresbody.Contains(request.Method.ToLower()) && request.Body == null)
-                    response = new {Status = "Missing Body", Body = ""};
+                    response = new {Status = "4 missing body", Body = ""};
                 //how to check if json format???
                 else if (request.Method == "update" && request.Body == "Hello World")
-                    response = new {Status = "Illegal Body", Body = ""};
+                    response = new {Status = "4 illegal body", Body = ""};
                 else if (request.Method == "echo")
-                    response = new {Status = "Echo", Body = request.Body};
+                    response = new {Status = "1 Ok", Body = request.Body};
 
                 if (request.Method == "Exit") break;
                 
