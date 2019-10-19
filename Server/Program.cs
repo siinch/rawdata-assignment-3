@@ -30,11 +30,11 @@ namespace Server
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        public Category(int idIn, string nameIn)
+        /*public Category(int idIn, string nameIn)
         {
             Id = idIn;
             Name = nameIn;
-        }
+        }*/
     }
 
     class Program
@@ -48,10 +48,10 @@ namespace Server
             var legalmethods = "create read update delete echo";
             var requirespath = "create read update delete";
             var requiresbody = "create update echo";
-            var categories = new List<Category>();
-            categories.Add(new Category(1, "Beverages"));
-            categories.Add(new Category(2, "Condiments"));
-            categories.Add(new Category(3, "Confections"));
+            var categories = new List<object>();
+            categories.Add(new {cid=1, name="Beverages"});
+            categories.Add(new {cid=2, name="Condiments"});
+            categories.Add(new {cid=3, name="Confections"});
             //var jsonformat = "} { \"method\": ,\"path\": ,\"date\": ,\"body\":";
             server.Start();
             
@@ -60,8 +60,9 @@ namespace Server
             {
                 Console.WriteLine("Waiting for client...");
                 var client = server.AcceptTcpClient();
-                ;
+                Console.WriteLine("Waiting for request...");
                 var request = client.ReadRequest();
+                Console.WriteLine($"Request: {request.ObjectToJson()}");
                 Response response = new Response();
 
                 if (request.Method == null && request.Date == null)
@@ -85,7 +86,10 @@ namespace Server
                 }
                 //how to check if the path is correct??
                 else if (!request.Path.Contains("/categories"))
+                {
                     response.Status = "4 Bad Request";
+                    //response.Body = null;
+                }
                 else if (request.Path.Contains("/categories"))
                 {
                     int id = 0;
@@ -94,46 +98,80 @@ namespace Server
                     {
                         foreach (var category in categories)
                         {
-                            if (id == category.Id && request.Method == "create")
+                            //Need explicit cat to Category because it is generic 
+                            var genericToCategory = category.ObjectToJson().JsonToObject<Category>();
+                            if (id == genericToCategory.Id && request.Method == "create")
                             {
                                 response.Status = "4 Bad Request";
                                 goto IdFound;
                             }
-                            if (id == category.Id && request.Method == "read")
+                            if (id == genericToCategory.Id && request.Method == "read")
                             {
                                 response.Status = "1 Ok";
                                 response.Body = category.ObjectToJson();
                                 goto IdFound;
                             }
-                            /*if (id == category.Id && request.Method == "update")
+                            if (id == genericToCategory.Id && request.Method == "update")
+                            {
+                                response.Status = "3 Updated";
+                                var tempCat = request.Body.JsonToObject<Category>();
+                                categories.Insert(categories.IndexOf(category), tempCat);
+                                categories.Remove(category);
+                                goto IdFound;
+                            }
+                            if (id == genericToCategory.Id && request.Method == "delete")
                             {
                                 response.Status = "1 Ok";
-                                response.Body = category.ObjectToJson();
+                                categories.Remove(category);
                                 goto IdFound;
-                            }*/
+                            }
                         }
 
                         response.Status = "5 Not Found";
                         IdFound: ;
                     }
-                    else
+                    else if (request.Path.Remove(0, request.Path.LastIndexOf("/") + 1) == "categories")
                     {
                         if (request.Method == "read")
                         {
                             response.Status = "1 Ok";
                             response.Body = categories.ObjectToJson();
                         }
-                        else
+
+                        else if (request.Method == "create")
+                        {
+                            response.Status = "2 Created";
+                            var existingIds = new List<int>();
+                            foreach (var category in categories)
+                            {
+                                existingIds.Add(category.ObjectToJson().JsonToObject<Category>().Id);
+                            }
+
+                            var newId = 1;
+                            while (existingIds.Contains(newId))
+                                newId++;
+
+                            var newName = request.Body.JsonToObject<Category>().Name;
+                            categories.Add(new{cid=newId, name=newName});
+                            response.Body = new {cid = newId, name = newName}.ObjectToJson();
+                        }
+                        else if (request.Method == "delete" || request.Method =="update")
                         {
                             response.Status = "4 Bad Request";
+                            response.Body = null;
                         }
+                    }
+                    else
+                    {
+                        response.Status = "4 Bad Request";
+                        response.Body = null;
                     }
                 }
 
                 if (request.Method == "Exit") break;
                 
-                Console.WriteLine($"Request: {request.ObjectToJson()}");
                 Console.WriteLine($"Response: {response.ObjectToJson()}");
+                Console.WriteLine("");
                 client.SendResponse(response.ObjectToJson());
             }
 
@@ -173,14 +211,17 @@ namespace Server
         public static Request ReadRequest(this TcpClient client)
         {
             var strm = client.GetStream();
-            //strm.ReadTimeout = 250;
+            Console.WriteLine("Got stream!");
+            //strm.ReadTimeout = 5000;
             byte[] request = new byte[2048];
             using (var memStream = new MemoryStream())
             {
                 int bytesread = 0;
                 do
                 {
+                    Console.WriteLine("Reading stream...");
                     bytesread = strm.Read(request, 0, request.Length);
+                    Console.WriteLine("Read stream!");
                     memStream.Write(request, 0, bytesread);
 
                 } while (bytesread == 2048);
