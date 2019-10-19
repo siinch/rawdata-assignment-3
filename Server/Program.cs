@@ -86,29 +86,47 @@ namespace Server
                 //how to check if the path is correct??
                 else if (!request.Path.Contains("/categories"))
                     response.Status = "4 Bad Request";
-                else if (request.Path.Contains("/categories/"))
+                else if (request.Path.Contains("/categories"))
                 {
                     int id = 0;
-                    Console.WriteLine(request.Path.Remove(0, "/api/category/".Length));
-                    if (Int32.TryParse(request.Path.Remove(0, "/api/categories/".Length), out id))
+                    //debugging stuff Console.WriteLine(request.Path.Remove(0, request.Path.LastIndexOf("/")));
+                    if (Int32.TryParse(request.Path.Remove(0, request.Path.LastIndexOf("/") + 1), out id))
                     {
-                        if (request.Method == "create")
+                        foreach (var category in categories)
                         {
-                            foreach (var category in categories)
+                            if (id == category.Id && request.Method == "create")
                             {
-                                if (id == category.Id)
-                                {
-                                    response.Status = "4 Bad Request";
-                                    goto IdAlreadyExists;
-                                }
+                                response.Status = "4 Bad Request";
+                                goto IdFound;
                             }
-                            
-                            IdAlreadyExists: ;
+                            if (id == category.Id && request.Method == "read")
+                            {
+                                response.Status = "1 Ok";
+                                response.Body = category.ObjectToJson();
+                                goto IdFound;
+                            }
+                            /*if (id == category.Id && request.Method == "update")
+                            {
+                                response.Status = "1 Ok";
+                                response.Body = category.ObjectToJson();
+                                goto IdFound;
+                            }*/
                         }
+
+                        response.Status = "5 Not Found";
+                        IdFound: ;
                     }
                     else
                     {
-                        response.Status = "4 Bad Request";
+                        if (request.Method == "read")
+                        {
+                            response.Status = "1 Ok";
+                            response.Body = categories.ObjectToJson();
+                        }
+                        else
+                        {
+                            response.Status = "4 Bad Request";
+                        }
                     }
                 }
 
