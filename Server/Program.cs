@@ -234,9 +234,17 @@ namespace Server
                     memStream.Write(request, 0, bytesread);
 
                 } while (bytesread == 2048);
-                
+
                 var requestData = Encoding.UTF8.GetString(memStream.ToArray());
-                return JsonSerializer.Deserialize<Request>(requestData, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+                try
+                {
+                    return JsonSerializer.Deserialize<Request>(requestData, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Some exception in ReadRequest. Continue....");
+                    return new Request();
+                }
             }
         }
     }

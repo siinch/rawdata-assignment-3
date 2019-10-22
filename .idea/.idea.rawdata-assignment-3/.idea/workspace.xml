@@ -4,10 +4,6 @@
     <list default="true" id="8e994675-fa3b-4ece-b0aa-3786565cf5a8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.rawdata-assignment-3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.rawdata-assignment-3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/bin/Debug/netcoreapp3.0/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/bin/Debug/netcoreapp3.0/Server.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/bin/Debug/netcoreapp3.0/Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/bin/Debug/netcoreapp3.0/Server.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/obj/Debug/netcoreapp3.0/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Debug/netcoreapp3.0/Server.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/obj/Debug/netcoreapp3.0/Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Debug/netcoreapp3.0/Server.pdb" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -97,7 +93,7 @@
       <workItem from="1571462145274" duration="21302000" />
       <workItem from="1571635782547" duration="1055000" />
       <workItem from="1571725648757" duration="325000" />
-      <workItem from="1571736176721" duration="6409000" />
+      <workItem from="1571736176721" duration="7293000" />
     </task>
     <servers />
   </component>
