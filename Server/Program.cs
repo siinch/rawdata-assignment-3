@@ -40,16 +40,17 @@ namespace Server
 
     class Program
     {
+        
+        public static string legalmethods = "create read update delete echo";
+        public static string requirespath = "create read update delete";
+        public static string requiresbody = "create update echo";
+        public static List<object> categories = new List<object>();
         static void Main(string[] args)
         {
             //setting up server
             var ip = IPAddress.Parse("127.0.0.1");
             var port = 5000;
             var server = new TcpListener(ip, port);
-            var legalmethods = "create read update delete echo";
-            var requirespath = "create read update delete";
-            var requiresbody = "create update echo";
-            var categories = new List<object>();
             categories.Add(new {cid=1, name="Beverages"});
             categories.Add(new {cid=2, name="Condiments"});
             categories.Add(new {cid=3, name="Confections"});
@@ -61,7 +62,15 @@ namespace Server
             {
                 Console.WriteLine("Waiting for client...");
                 var client = server.AcceptTcpClient();
-                Console.WriteLine("Waiting for request...");
+                new Thread(() => HandleClientRequest(client)).Start();
+            }
+
+            server.Stop();
+        }
+
+        public static void HandleClientRequest(TcpClient client)
+        {
+            Console.WriteLine("Waiting for request...");
                 var request = client.ReadRequest();
                 Console.WriteLine($"Request: {request.ObjectToJson()}");
                 Response response = new Response();
@@ -171,14 +180,9 @@ namespace Server
                     }
                 }
 
-                if (request.Method == "Exit") break;
-                
-                Console.WriteLine($"Response: {response.ObjectToJson()}");
-                Console.WriteLine("");
-                client.SendResponse(response.ObjectToJson());
-            }
-
-            server.Stop();
+            Console.WriteLine($"Response: {response.ObjectToJson()}");
+            Console.WriteLine("");
+            client.SendResponse(response.ObjectToJson());
         }
     }
 
