@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 
 namespace Server
 {
@@ -65,6 +66,8 @@ namespace Server
                 Console.WriteLine($"Request: {request.ObjectToJson()}");
                 Response response = new Response();
 
+                DateTime testDate;
+
                 if (request.Method == null && request.Date == null)
                     response.Status = "4 missing method, missing date";
                 else if (!legalmethods.Contains(request.Method.ToLower()))
@@ -72,12 +75,12 @@ namespace Server
                 else if (requirespath.Contains(request.Method.ToLower()) && request.Path == null)
                     response.Status = "4 missing resource";
                 // how to check if unix format???
-                else if (request.Date.Contains("/"))
+                else if (DateTime.TryParse(request.Date, out testDate))
                     response.Status = "4 illegal date";
                 else if (requiresbody.Contains(request.Method.ToLower()) && request.Body == null)
                     response.Status = "4 missing body";
                 //how to check if json format???
-                else if (request.Method == "update" && request.Body == "Hello World")
+                else if (request.Method == "update" && !request.Body.IsJsonFormat())
                     response.Status = "4 illegal body";
                 else if (request.Method == "echo")
                 {
@@ -181,16 +184,18 @@ namespace Server
 
     public static class Util
     {
-        public static string ReadAllCategories(this List<Category> categories)
+        public static bool IsJsonFormat(this string s)
         {
-            var allCategories = "[";
-            foreach (var category in categories)
+            try
             {
-                allCategories = allCategories + categories.ObjectToJson() + ",";
+                s.JsonToObject<Category>();
+                return true;
             }
-            //remove the last comma and add "]"
-            allCategories = allCategories.Remove(allCategories.Length - 1) + "]";
-            return allCategories;
+            catch (Exception e)
+            {
+                Console.WriteLine("bad json");
+                return false;
+            }
         }
         public static string ObjectToJson(this object data)
         {

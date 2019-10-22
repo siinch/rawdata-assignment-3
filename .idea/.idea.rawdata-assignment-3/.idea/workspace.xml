@@ -6,6 +6,7 @@
       <change beforePath="$PROJECT_DIR$/Server/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/bin/Debug/netcoreapp3.0/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/bin/Debug/netcoreapp3.0/Server.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/bin/Debug/netcoreapp3.0/Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/bin/Debug/netcoreapp3.0/Server.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/obj/Debug/netcoreapp3.0/Server.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Debug/netcoreapp3.0/Server.csprojAssemblyReference.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/obj/Debug/netcoreapp3.0/Server.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Debug/netcoreapp3.0/Server.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/obj/Debug/netcoreapp3.0/Server.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Server/obj/Debug/netcoreapp3.0/Server.pdb" afterDir="false" />
     </list>
@@ -47,7 +48,7 @@
     <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
     <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/RAWDATA_2019_Assignment3TestSuite-master/Assignment3TestSuite/Assignment3TestSuite.csproj" />
+    <property name="last_opened_file_path" value="$USER_HOME$/RiderProjects/test" />
     <property name="settings.editor.selected.configurable" value="RiderUnitTestingPageId" />
   </component>
   <component name="RunDashboard">
@@ -94,7 +95,10 @@
       <updated>1571320851504</updated>
       <workItem from="1571320860061" duration="3786000" />
       <workItem from="1571414300042" duration="19727000" />
-      <workItem from="1571462145274" duration="19916000" />
+      <workItem from="1571462145274" duration="21302000" />
+      <workItem from="1571635782547" duration="1055000" />
+      <workItem from="1571725648757" duration="325000" />
+      <workItem from="1571736176721" duration="4761000" />
     </task>
     <servers />
   </component>
